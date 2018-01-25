@@ -155,9 +155,9 @@ function prepareResponse(response) {
 				    case 3: // image response
 						imageResponse(message.imageUrl);
 				        break;
-				    case 3: // custom payload
-
-				        break;
+					case 4: // custom payload
+						// Only with facebook
+						customPayloadResponse(message.payload.facebook.attachment.payload.elements);
 				    default:
 				}
 			}
@@ -245,9 +245,30 @@ function imageResponse(imageUrl) {
  * @param postback
  */
 function cardResponse(title, subtitle, buttons, text, postback) {
-	var html = "<div class=\"myc-card-title\">" + title + "</div>";
+	var html = "";
+
+	if (typeof imageUrl !== 'undefined') {
+		html += "<div class=\"myc-image-response\"><img src=\"" + imageUrl + "\"/></div>";
+	}
+
+	html += "<div class=\"myc-card-title\">" + title + "</div>";
+
 	html += "<div class=\"myc-card-subtitle\">" + subtitle + "</div>";
-	// TODO
+
+	jQuery.each(buttons, function (index, item) {
+
+		// if customPayloadResponse
+		if (typeof item.title !== 'undefined') {
+			item.text = item.title;
+			item.postback = item.payload;
+		}
+
+		html += "<input type=\"button\" onclick=\"sendQuery('" + item.postback + "')\" class=\"myc-quick-reply\" value=\"" + item.text + "\" />";
+	});
+
+	jQuery("#myc-conversation-area").append("<div class=\"myc-conversation-bubble-container myc-conversation-bubble-container-response\">" +
+		"<div class=\"myc-conversation-bubble myc-conversation-response myc-is-active myc-quick-replies-response\">" + html + "</div>" +
+		"</div>");
 }
 
 /**
@@ -299,4 +320,33 @@ function quickRepliesResponse(title, replies) {
  */
 function customPayload(payload) {
 
+}
+
+/**
+ * Custom payload
+ * 
+ * @param element
+ */
+function customPayloadResponse(element) {
+
+	jQuery.each(element, function (index, item) {
+		cardResponse(item.title, item.subtitle, item.buttons, item.image_url, null, null)
+	});
+}
+
+/**
+ * Send payload
+ * If it is a URL will open the link, if not, send payload
+ *
+ * @param payload
+ */
+function sendQuery(payload) {
+
+	var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+
+	if (regex.test(payload)) {
+		window.open(payload);
+	} else {
+		textQuery(payload);
+	}
 }
