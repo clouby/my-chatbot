@@ -17,6 +17,7 @@
 }
 .myc-conversation-bubble {
 	padding: 6px 9px;
+	opacity: 1 !important;
 	display: inline-block;
 	border-radius: 3px;
 	box-shadow: 0 1px 1px rgba(0,0,0,0.2);
@@ -159,6 +160,43 @@
 	padding: 10px;
 	margin-top: 0px;
 }
+ .myc-conversation-response:after {
+	z-index: -100;
+	opacity: 0;
+}
+
+
+.myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response ,.myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-quick-replies-response {
+	display: flex;
+	flex-direction: column;
+	margin-left: 20%;
+	background-color: white !important;
+	padding: 0;
+	border: 0.6px solid rgba(144,144,144, 0.3) !important;
+}
+ input[type="button"] {
+	margin: 0;
+	color: rgba(48,79,133, 0.5) !important;
+	border-radius: 0px !important;
+	font-weight: 600 !important;
+	background-color: transparent !important;
+	border-top: 0.6px solid rgba(144,144,144, 0.7) !important;
+	transition: all .3s ease !important;
+}
+
+ input[type="button"]:hover {
+	 text-shadow: 0px 0px rgba(48,79,133, 0.6) !important;
+ }
+
+.myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-quick-replies-response .myc-card-title, .myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-quick-replies-response  .myc-card-subtitle,
+.myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response .myc-card-title,
+.myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response .myc-card-subtitle{
+	text-align: left;
+	font-weight: 600;
+	font-size: .9em;
+	padding: 5px;
+}
+
 
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen and (min-width : 320px) and (max-width : 480px) {
