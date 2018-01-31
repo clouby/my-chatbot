@@ -4,7 +4,21 @@
 // Demo: https://devdiner.com/demos/barry/
 
 // When ready :)
+const error_internal = (err) => textResponse(myc_script_vars.messages.internal_error)
+const handler_simple_error = prm => prm.catch(error_internal) && prm;
+
 jQuery(document).ready(function() {
+	
+	/*
+	 * Welcome
+	 */
+	if (myc_script_vars.enable_welcome_event) {
+		(async function(){
+			const response = await main_req({event : 'welcome'});
+			prepareResponse(response);
+		})();
+	}
+	
 
 	/*
 	 * When the user enters text in the text input text field and then the presses Enter key
@@ -21,36 +35,6 @@ jQuery(document).ready(function() {
 			textQuery(text);
 		}
 	});
-
-
-	/*
-	 * Welcome
-	 */
-	if (myc_script_vars.enable_welcome_event) {
-		jQuery.ajax({
-			type : "POST",
-			url : myc_script_vars.base_url + "query?v=" + myc_script_vars.version_date,
-			contentType : "application/json; charset=utf-8",
-			dataType : "json",
-			headers : {
-				"Authorization" : "Bearer " + myc_script_vars.access_token
-			},
-			data : JSON.stringify( {
-				event : {
-					name : "WELCOME"
-				},
-				lang : "en",
-				sessionId : myc_script_vars.session_id,
-			} ),
-			success : function(response) {
-				prepareResponse(response);
-			},
-			error : function(response) {
-				textResponse(myc_script_vars.messages.internal_error);
-				//jQuery("#myc-conversation-area").scrollTop(jQuery("#myc-conversation-area").prop("scrollHeight"));
-			}
-		});
-	}
 
 
 	/* Overlay slide toggle */
@@ -73,8 +57,36 @@ jQuery(document).ready(function() {
 
 });
 
+	/* Main Request */
+	async function main_req(obj_send){
+		const URL = `${myc_script_vars.base_url}query?v=${myc_script_vars.version_date}`;
+		
+		const arr_obj = Object.keys(obj_send);
+
+		if(arr_obj[0] === 'event' && arr_obj.length == 1) {
+			 obj_send['event'] = { 'name' : obj_send['event'].toLocaleUpperCase() }
+		};
+
+		const send_data = {
+			lang : "en",
+			sessionId: myc_script_vars.session_id,
+			...obj_send
+		};
+		const creds = {
+			method: "POST",
+			body: JSON.stringify(send_data),
+			headers : new Headers({
+				'Content-Type' : 'application/json',
+				'Authorization' : `Bearer ${myc_script_vars.access_token}`
+			})
+		}
+		return await(await handler_simple_error(fetch(URL, creds))).json();
+			
+	}
+
+
 function card_request(text) {
-	var innerHTML = "<div class=\"myc-conversation-bubble-container myc-conversation-bubble-container-request\"><div class=\"myc-conversation-bubble myc-conversation-request myc-is-active\">" + text + "</div>";
+	var innerHTML = "<div class=\"myc-conversation-bubble-container myc-conversation-bubble-container-request\"><div class=\"myc-conversation-bubble myc-conversation-request myc-is-active\">" + text + " <div class=\"load__spin\"> </div> </div>";
 	if (myc_script_vars.show_time) {
 		innerHTML += "<div class=\"myc-datetime\">" + date.toLocaleTimeString() + "</div>";
 	}
@@ -88,9 +100,8 @@ function card_request(text) {
 function pos_req() {
 	const par = jQuery('.myc-conversation-bubble-container.myc-conversation-bubble-container-request').last()[0];
 	const con = jQuery("#myc-conversation-area");
-
-
 		if (par) {
+			con.css("padding-bottom", "330px");
 			con.scrollTop(par.offsetTop - con.height());
 		}
 }
@@ -116,20 +127,25 @@ function textQuery(text) {
 			sessionId: myc_script_vars.session_id
 		} ),
 		success : function(response) {
+			pos_req();
 			setTimeout(function(){
 				if (myc_script_vars.show_loading) {
 
 					jQuery(".myc-loading").empty();
 				}
 				prepareResponse(response);
+				jQuery('.myc-conversation-bubble.myc-conversation-request.myc-is-active .load__spin')
+				.css("display", "none");
+				jQuery("#myc-conversation-area").css("padding-bottom", "0px");
 			}, myc_script_vars.response_delay);
-			pos_req();
+
 		},
 		error : function(response) {
 			if (myc_script_vars.show_loading) {
 				jQuery(".myc-loading").empty();
 			}
 			textResponse(myc_script_vars.messages.internal_error);
+			console.log('err')
 			//Query("#myc-conversation-area").scrollTop(jQuery("#myc-conversation-area").prop("scrollHeight"));
 			pos_req();
 		}
@@ -270,7 +286,7 @@ function cardResponse(title, subtitle, buttons, text, postback) {
 
 	html += "<div class=\"myc-card-title\">" + title + "</div>";
 
-	html += "<div class=\"myc-card-subtitle\">" + subtitle + "</div>";
+	html +=  (subtitle) ? "<div class=\"myc-card-subtitle\">" + subtitle + "</div>" : '';
 
 	jQuery.each(buttons, function (index, item) {
 

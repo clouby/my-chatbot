@@ -9,8 +9,9 @@
 	max-width: 100%;
 	max-height: 320px;
 	position: relative !important;
-	padding-bottom: 330px;
-	overflow: auto;
+	padding-bottom: 0px;
+	overflow-y: auto !important;
+	overflow-x: hidden !important;
 	padding-right: 20px; /* FIXME only add padding if vertical scrollbar is added*/
 	padding-left: 20px; /* FIXME only add padding if vertical scrollbar is added*/
 }
@@ -177,14 +178,17 @@ input#myc-text::placeholder {
 	color: rgb(229, 229, 229) !important;
 }
 
-.myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response ,.myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-quick-replies-response {
+.myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response ,
+.myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-quick-replies-response {
 	display: flex;
 	flex-direction: column;
 	margin-left: 20%;
 	background-color: white !important;
 	padding: 0;
 	border: 0.6px solid rgba(144,144,144, 0.3) !important;
+	animation: tra .1s ease;
 }
+
  input[type="button"] {
 	margin: 0;
 	color: rgb(67,130,248) !important;
@@ -192,7 +196,7 @@ input#myc-text::placeholder {
 	font-weight: 500 !important;
 	background-color: transparent !important;
 	border-top: 0.6px solid rgba(144,144,144, 0.7) !important;
-	transition: all .3s ease !important;
+	transition: all .2s linear !important;
 }
 
  input[type="button"]:hover,
@@ -202,11 +206,38 @@ input#myc-text::placeholder {
 	 background-color: rgb(67,130,248) !important;
  }
 
+ .myc-conversation-bubble.myc-conversation-request.myc-is-active {
+	 position: initial;
+ }
+ .myc-conversation-bubble-container.myc-conversation-bubble-container-request {
+	 position: relative;
+ }
+ .myc-conversation-bubble.myc-conversation-request.myc-is-active .load__spin {
+	 top: 100px;
+	 left: 50%;
+	 position: absolute;
+	 border-radius: 50%;
+	 border: 4px solid rgba(67,130,248, 0.5);
+	 border-top: 4px solid rgba(67,130,248, 1);
+	 width: 20px;
+	 height: 20px;
+	 animation: rote 0.4s linear infinite;
+	 display: initial;
+ }
+
+ @keyframes rote {
+	 0% { transform: rotate(0deg); }
+	 100% { transform: rotate(360deg); }
+ }
+
+ @keyframes tra {
+	 0% { transform: translateX(70%); }
+	 100% { transform: translateX(0%); }
+ }
+
 .myc-conversation-bubble.myc-conversation-request.myc-is-active::before {
 	background-color: inherit !important;
 }
-
-
 
 .myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-quick-replies-response .myc-card-title, .myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-quick-replies-response  .myc-card-subtitle,
 .myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response .myc-card-title,
@@ -224,10 +255,13 @@ input#myc-text::placeholder {
 .myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-text-response {
 	font-size: 12px;
 	background-color: rgba(241, 240, 240, 1);
+	animation: tra .2s ease;
 }
 .myc-conversation-bubble.myc-conversation-response.myc-text-response::after,
 .myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-text-response::after {
 	opacity: 1 !important;
+	z-index: 10 !important;
+	background-color: rgba(241, 240, 240, 1);
 }
 
 /* Smartphones (portrait and landscape) ----------- */
