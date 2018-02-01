@@ -15,6 +15,15 @@
 	padding-right: 20px; /* FIXME only add padding if vertical scrollbar is added*/
 	padding-left: 20px; /* FIXME only add padding if vertical scrollbar is added*/
 }
+
+.myc-image-response {
+	padding: 0 !important;
+	position: relative !important;
+	overflow: hidden !important;
+}
+.myc-content-overlay-container .myc-image-response img {
+	transform: scale(1.2, 1.2);
+}
 .myc-conversation-bubble-container + .myc-conversation-bubble-container {
 	margin-top: 10px;
 }
@@ -126,6 +135,13 @@
 	padding-left: 10px;
 	padding-right: 10px;
 	display: block;
+	background-color: rgba(67,130,248, 1) !important;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+.myc-content-overlay-header .myc-content-overlay-header-text {
+	font-size: .7em !important;
 }
 .myc-content-overlay-powered-by {
 	background-color: #e5e5e5;
@@ -187,6 +203,8 @@ input#myc-text::placeholder {
 	padding: 0;
 	border: 0.6px solid rgba(144,144,144, 0.3) !important;
 	animation: tra .1s ease;
+	overflow: hidden !important;
+	border-radius: 5%;
 }
 
  input[type="button"] {
@@ -244,11 +262,13 @@ input#myc-text::placeholder {
 .myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response .myc-card-subtitle{
 	text-align: left;
 	font-weight: 600;
-	font-size: .8em;
-	padding: 5px;
+	font-size: .7em;
+	padding-top: 5px;
+	padding-left: 8px;
 }
 .myc-card-subtitle {
 	font-weight: 100 !important;
+	padding-bottom: 5px;
 }
 
 .myc-conversation-bubble.myc-conversation-response.myc-text-response,
@@ -256,6 +276,7 @@ input#myc-text::placeholder {
 	font-size: 12px;
 	background-color: rgba(241, 240, 240, 1);
 	animation: tra .2s ease;
+	overflow: hidden;
 }
 .myc-conversation-bubble.myc-conversation-response.myc-text-response::after,
 .myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-text-response::after {
