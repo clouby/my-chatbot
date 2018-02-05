@@ -255,7 +255,7 @@ function cardResponse(title, subtitle, buttons, text, postback, imageUrl = null)
 	var html = "";
 
 	if (imageUrl) {
-		html += "<div class=\"myc-image-response\"><img src=\"" + imageUrl + "\"/></div>";
+		html += "<div class=\"myc-image-response\"><div class=\"wrapper_img\"><img src=\"" + imageUrl + "\"/></div></div>";
 	}
 
 	html += "<div class=\"myc-card-title\">" + title + "</div>";
@@ -354,7 +354,6 @@ function sendQuery(payload) {
 	if (regex.test(payload)) {
 		window.open(payload);
 	} else {
-
 		textQuery(payload);
 	}
 }
