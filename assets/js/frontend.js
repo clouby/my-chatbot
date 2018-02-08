@@ -100,7 +100,7 @@ function pos_req(response) {
 	const con = jQuery("#myc-conversation-area");
 	return new Promise(resolve => {
 		if (par) {
-			con.css("padding-bottom", "330px");
+			con.css("padding-bottom", "40vh");
 			con.scrollTop(par.offsetTop - con.height());
 		}
 		setTimeout(() => {
@@ -111,7 +111,7 @@ function pos_req(response) {
 }
 
 function hide_load(con) {
-	con.css("padding-bottom", "0px");
+	con.css("padding-bottom", "0vh");
 	jQuery('.myc-conversation-bubble.myc-conversation-request.myc-is-active .load__spin')
 	.css("display", "none");
 }
