@@ -11,3 +11,6 @@
 	} ?>
 	<div class="myc-content-overlay-container"><?php echo do_shortcode( '[my_chatbot]' ); ?></div>
 </div>
+<div class="circle__chat">
+<i class="ion-chatbox-working"></i>
+</div>

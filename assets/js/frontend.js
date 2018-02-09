@@ -6,8 +6,13 @@
 // When ready :)
 const error_internal = (err) => textResponse(myc_script_vars.messages.internal_error) && pos_req();
 const handler_simple_error = prm => prm.catch(error_internal) && prm;
+let auxMove = true;
+
 
 jQuery(document).ready(function() {
+
+const circle_chat = document.querySelector(".circle__chat");
+
 
 	/*
 	 * Welcome
@@ -35,23 +40,36 @@ jQuery(document).ready(function() {
 	});
 
 
-	/* Overlay slide toggle */
-	jQuery(".myc-content-overlay .myc-content-overlay-header").click(function(event){
 
-		if (jQuery(this).find(".myc-icon-toggle-up").css("display") !== "none") {
-			jQuery(this).find(".myc-icon-toggle-up").hide();
-			jQuery(this).parent().removeClass("myc-toggle-closed");
-			jQuery(this).parent().addClass("myc-toggle-open");
-			jQuery(this).find(".myc-icon-toggle-down").show();
-			jQuery(this).siblings(".myc-content-overlay-container").slideToggle("slow", function() {});
-		} else {
-			jQuery(this).find(".myc-icon-toggle-down").hide();
-			jQuery(this).parent().removeClass("myc-toggle-open");
-			jQuery(this).parent().addClass("myc-toggle-closed");
-			jQuery(this).find(".myc-icon-toggle-up").show();
-			jQuery(this).siblings(".myc-content-overlay-container").slideToggle("slow", function() {});
-		}
-	});
+	const handler_click_opt = function(e) {
+		const card_overlay = document.querySelector('.myc-content-overlay');
+		const move_it = (auxMove) ? "6%" : "-90%";
+		//card_overlay.style.right = "6%";
+		document.documentElement.style.setProperty('--responsiveright', move_it);
+		auxMove = !auxMove;
+	}
+
+
+	/* Overlay slide toggle */
+	circle_chat.addEventListener("click", handler_click_opt);
+
+
+	// jQuery(".myc-content-overlay .myc-content-overlay-header").click(function(event){
+  //
+	// 	if (jQuery(this).find(".myc-icon-toggle-up").css("display") !== "none") {
+	// 		jQuery(this).find(".myc-icon-toggle-up").hide();
+	// 		jQuery(this).parent().removeClass("myc-toggle-closed");
+	// 		jQuery(this).parent().addClass("myc-toggle-open");
+	// 		jQuery(this).find(".myc-icon-toggle-down").show();
+	// 		jQuery(this).siblings(".myc-content-overlay-container").slideToggle("slow", function() {});
+	// 	} else {
+	// 		jQuery(this).find(".myc-icon-toggle-down").hide();
+	// 		jQuery(this).parent().removeClass("myc-toggle-open");
+	// 		jQuery(this).parent().addClass("myc-toggle-closed");
+	// 		jQuery(this).find(".myc-icon-toggle-up").show();
+	// 		jQuery(this).siblings(".myc-content-overlay-container").slideToggle("slow", function() {});
+	// 	}
+	// });
 
 });
 
@@ -100,7 +118,7 @@ function pos_req(response) {
 	const con = jQuery("#myc-conversation-area");
 	return new Promise(resolve => {
 		if (par) {
-			con.css("padding-bottom", "40vh");
+			con.css("padding-bottom", "30vh");
 			con.scrollTop(par.offsetTop - con.height());
 		}
 		setTimeout(() => {

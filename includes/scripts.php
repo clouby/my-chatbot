@@ -120,7 +120,7 @@ function myc_register_styles() {
 		';
 	} else {
 		$custom_css .= '
-			.myc-content-overlay-header .myc-icon-toggle-down, .myc-content-overlay-powered-by, .myc-content-overlay-container {
+			.myc-content-overlay-header .myc-icon-toggle-down, .myc-content-overlay-powered-by {
 				display: none;
 			}
 		';
