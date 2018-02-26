@@ -1,4 +1,5 @@
 @import url('http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
+@import url('fonts.css');
 
 *, *::before, *::after {
 	box-sizing: border-box !important;
@@ -140,15 +141,17 @@
 /* Overlay */
 .myc-content-overlay {
 	position: fixed;
-	right: calc(var(--responsiveright) * 1);
+	will-change: var(--responsiveright);
+	right: calc(var(--responsiveright) * 5); 
+	transform: translateZ(0);
 	bottom: 12%;
+	font-family: 'Roboto', sans-serif !important;
 	width: 350px;
 	overflow: hidden;
 	display: block;
-	transition: right .1s linear;
-	box-shadow: 0 0 3px rgba(0,0,0,.3);
+	box-shadow: 0 0 3px rgba(0,0,0,.3), 0px 12px 47px rgba(0,0,0,.1);
 	z-index: 999;
-	transition: all .3s ease !important;
+	transition: all .2s ease-in-out !important;
 	background-color: #fff;
 	text-align: left;
 }
@@ -165,42 +168,55 @@
 	padding-left: 10px;
 	padding-right: 10px;
 	display: block;
+	position:  relative !important;
 	color: black !important;
 	text-align: center;
-	/* line-height: 2;
-	color: black !important;
-	text-align: center;
-	background-color: white !important;
-	border: .7px solid rgba(0,0,0,.5);
-	box-sizing: border-box;
-	position: fixed;
-	bottom: 3%;
-	right: 3%;
-	border-radius: 50%;
-	cursor: pointer !important; */
 }
 
-.circle__chat {
-	width: 50px;
-	height: 50px;
-	text-align: center;
-	background-color: white;
-	opacity: 1 !important;
-	-webkit-tap-highlight-color: transparent;
-	box-sizing: border-box;
-	font-size: 1.1em;
-	bottom: 3%;
-	right: 3%;
-	cursor: pointer !important;
+
+.chat__container {
+	width: 100px;
+	height: 100px;
 	position: fixed;
-	border-radius: 50%;
-	bottom: 3%;
-	right: 3%;
-	cursor: pointer;
-	line-height: 3;
-	box-shadow: 0px 7px 10px rgba(144,144,144, 0.3);
-	border: 0.4px solid rgba(144,144,144, 0.7);
+	bottom: 0px;
+	right: 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
+#circle__chat {
+	width: 60%;
+	height: 60%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
+	box-sizing: border-box;
+	font-size: 1em;
+	left: 0;
+	top: 0;
+	color: gray;
+ 	-webkit-tap-highlight-color: transparent;
+	-moz-tap-highlight-color: transparent; 
+	position: relative;
+	border-radius: 50%;
+	transition: .2s transform ease;
+	line-height: 2.6;
+	cursor: pointer;
+ 	box-shadow: 0px 7px 10px rgba(144,144,144, 0.3);
+	border: 0.4px solid rgba(144,144,144, 0.7); 
+}
+
+#circle__chat:active {
+	transform: translateY(5px);
+}
+
+#circle__chat > i {
+	display: flex;
+	align-items: center;
+	font-size: 1.5em;
+}
+
 
 .myc-content-overlay-header .myc-content-overlay-header-text {
 	font-size: .6em !important;
@@ -224,11 +240,18 @@
 	width: 5px !important;
 	height: 5px !important;
 	background-color: lightgreen !important;
-
 	border-radius: 50%;
 	display: inline-block !important;
 }
 
+.myc-content-overlay-header .myc-icon-toggle-up {
+	position: absolute !important;
+	right: 15px;
+	top: 23px;
+	width: 10px;
+	height: 10px;
+
+}
 .myc-content-overlay-container {
 	display: block;
 	height: auto;
@@ -287,12 +310,15 @@ input#myc-text:focus {
 
  input[type="button"] {
 	margin: 0;
+	border: none !important;
 	color: rgb(67,130,248) !important;
 	border-radius: 0px !important;
 	font-weight: 500 !important;
 	background-color: transparent !important;
 	border-top: 0.6px solid rgba(144,144,144, 0.7) !important;
-	transition: all .2s linear !important;
+	transition: all .1s linear !important;
+	font-family: 'Roboto', sans-serif !important;
+	font-weight: 400 !important;
 }
 
  input[type="button"]:hover,
@@ -300,6 +326,8 @@ input#myc-text:focus {
 	 color: whitesmoke !important;
 	 border-radius: 2px !important;
 	 background-color: rgb(67,130,248) !important;
+	 font-family: 'Roboto', sans-serif !important;
+	 font-weight: 300;
  }
 
  .myc-conversation-bubble.myc-conversation-request.myc-is-active {
@@ -369,21 +397,17 @@ input#myc-text:focus {
 		min-width: 100%;
 		width: 100%;
 		max-height: 320px;
-	}
-	.circle__chat {
-		font-size: 1.2em;
+		bottom: 0%;
 	}
 	.myc-image-response .wrapper_img img {
 		max-width: 100%;
 	}
 	.myc-content-overlay {
-		min-width: 90%;
 		margin-left: 5%;
-		width: 90%;
-		max-height: 100%;
-		bottom: 15%;
-		right: calc(var(--responsiveright) * 1.3);
-		margin-left: 5%;
+		width: 98%;
+		max-height: auto;
+		bottom: 1%;
+		right: calc(var(--responsiveright) * 1.1);
 	}
 	.myc-content-overlay-container {
 		font-size: 100%;
@@ -391,6 +415,7 @@ input#myc-text:focus {
 		position: relative;
 		top: 10%;
 	}
+
 
 	.myc-content-overlay-container .myc-container {
 		display: block;
@@ -410,33 +435,48 @@ input#myc-text:focus {
 
 @media only screen and (min-width : 250px) and (max-width : 800px) and (orientation: landscape) {
 	.myc-content-overlay-container .myc-container #myc-conversation-area {
-		max-height: 40vh !important;
-	}
-	.circle__chat {
-		font-size: 1em;
+		max-height: 65vh !important;
 	}
 
+
 	.myc-content-overlay {
-		right: calc(var(--responsiveright) * 2 );
+		right: calc(var(--responsiveright) * 1.1 );
+		width: 98%;
+		bottom: 1%;
 	}
 	.myc-content-overlay-container .myc-image-response .wrapper_img img {
 		border-top-left-radius: 9px;
 		border-top-right-radius: 9px;
 		transform: scale(1);
 	}
-	.
-	.myc-content-overlay {
-		bottom: 0%;
+
+	.myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response, 
+	.myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-quick-replies-response {
+		margin-left: 50%;
 	}
+
+	.myc-icon-toggle-up, .myc-icon-toggle-up::before {
+		display: block !important;
+	}
+
 }
 @media only screen and (min-width : 250px) and (max-width : 480px) and (orientation: portrait) {
 	.myc-content-overlay-container .myc-container #myc-conversation-area {
-		height: 55vh;
+		height: 72vh;
 	}
 	.myc-content-overlay-container .myc-image-response .wrapper_img img {
 		border-top-left-radius: 9px;
 		border-top-right-radius: 9px;
 		transform: scale(1);
+	}
+
+/* 	#circle__chat {
+		font-size: 1.2em;
+		line-height: 2.7;
+	} */
+
+	.myc-icon-toggle-up, .myc-icon-toggle-up::before {
+		display: block !important;
 	}
 }
 
@@ -480,6 +520,7 @@ input#myc-text:focus {
 	font-style: normal;
 }
 
+
 [class^="myc-icon-"], [class*=" myc-icon-"] {
 	/* use !important to prevent issues with browser extensions that change fonts */
 	font-family: 'myc-icons' !important;
@@ -496,8 +537,13 @@ input#myc-text:focus {
 }
 
 .myc-icon-toggle-up:before {
-  /* content: "\f077"; */
-
+   content: "\f078"; 
+   font-size: 15px;
+   transform: rotate(270deg) !important;
+   position: absolute;
+   top: 0;
+   right: 0;
+   display: none;
 }
 .myc-icon-toggle-down:before {
   /* content: "\f078"; */

@@ -1,26 +1,23 @@
-
 // Based on blog post: https://www.sitepoint.com/how-to-build-your-own-ai-assistant-using-api-ai/
 // Source code: https://github.com/sitepoint-editors/Api-AI-Personal-Assistant-Demo/blob/master/index.html.
 // Demo: https://devdiner.com/demos/barry/
 
-// When ready :)
-const error_internal = (err) => textResponse(myc_script_vars.messages.internal_error) && pos_req();
+const error_internal = err => textResponse(myc_script_vars.messages.internal_error) && pos_req();
 const handler_simple_error = prm => prm.catch(error_internal) && prm;
 let auxMove = true;
 
+// When ready :)
+ jQuery(document).ready(function() {
 
-jQuery(document).ready(function() {
-
-const circle_chat = document.querySelector(".circle__chat");
-
+	var circle_chat = document.getElementById("circle__chat");
+	var arrow_back = document.querySelector(".myc-icon-toggle-up");
 
 	/*
 	 * Welcome
 	 */
 	if (myc_script_vars.enable_welcome_event) {
-		(async function(){
-			const response = await main_req({event : 'welcome'});
-			pos_req(response).then(hide_load);
+		(function(){
+			main_req({event : 'welcome'}).then(response => pos_req(response).then(hide_load) );
 		})();
 	}
 
@@ -39,55 +36,38 @@ const circle_chat = document.querySelector(".circle__chat");
 		}
 	});
 
-
-
-	const handler_click_opt = function(e) {
+	function handler_click_opt(e) {
+		e.preventDefault();
 		const card_overlay = document.querySelector('.myc-content-overlay');
-		const move_it = (auxMove) ? "6%" : "-90%";
-		//card_overlay.style.right = "6%";
+		const move_it = (auxMove) ? "1%" : "-90%";
 		document.documentElement.style.setProperty('--responsiveright', move_it);
 		auxMove = !auxMove;
 	}
 
-
+	arrow_back.addEventListener("click", handler_click_opt);
 	/* Overlay slide toggle */
 	circle_chat.addEventListener("click", handler_click_opt);
 
 
-	// jQuery(".myc-content-overlay .myc-content-overlay-header").click(function(event){
-  //
-	// 	if (jQuery(this).find(".myc-icon-toggle-up").css("display") !== "none") {
-	// 		jQuery(this).find(".myc-icon-toggle-up").hide();
-	// 		jQuery(this).parent().removeClass("myc-toggle-closed");
-	// 		jQuery(this).parent().addClass("myc-toggle-open");
-	// 		jQuery(this).find(".myc-icon-toggle-down").show();
-	// 		jQuery(this).siblings(".myc-content-overlay-container").slideToggle("slow", function() {});
-	// 	} else {
-	// 		jQuery(this).find(".myc-icon-toggle-down").hide();
-	// 		jQuery(this).parent().removeClass("myc-toggle-open");
-	// 		jQuery(this).parent().addClass("myc-toggle-closed");
-	// 		jQuery(this).find(".myc-icon-toggle-up").show();
-	// 		jQuery(this).siblings(".myc-content-overlay-container").slideToggle("slow", function() {});
-	// 	}
-	// });
-
 });
 
 	/* Main Request */
-	async function main_req(obj_send){
+	 function main_req(obj_send){
 		const URL = `${myc_script_vars.base_url}query?v=${myc_script_vars.version_date}`;
-
+		let key = "";
 		const arr_obj = Object.keys(obj_send);
-
-		if(arr_obj[0] === 'event' && arr_obj.length == 1) {
-			 obj_send['event'] = { 'name' : obj_send['event'].toLocaleUpperCase() }
-		};
 
 		const send_data = {
 			lang : "en",
 			sessionId: myc_script_vars.session_id,
-			...obj_send
 		};
+
+		send_data[arr_obj[0]] = (arr_obj[0] === 'event' && arr_obj.length == 1) ?  
+		{'name' : obj_send[arr_obj[0]].toLocaleUpperCase() } : obj_send[arr_obj[0]];
+
+
+		console.log(send_data);
+
 		const creds = {
 			method: "POST",
 			body: JSON.stringify(send_data),
@@ -96,7 +76,7 @@ const circle_chat = document.querySelector(".circle__chat");
 				'Authorization' : `Bearer ${myc_script_vars.access_token}`
 			})
 		}
-		return await(await handler_simple_error(fetch(URL, creds))).json();
+		return  handler_simple_error(fetch(URL, creds)).then(response => response.json())
 
 	}
 
@@ -139,11 +119,10 @@ function hide_load(con) {
  * @param text
  * @returns
  */
-async function textQuery(text) {
+ function textQuery(text) {
 	if(!text) return;
-	card_request(text);
-	const response = await main_req({query : text});
-	pos_req(response).then(hide_load);
+	card_request(text.replace(/\_+/g, " "));
+	main_req({query : text}).then(response => pos_req(response).then(hide_load));
 }
 
 /**

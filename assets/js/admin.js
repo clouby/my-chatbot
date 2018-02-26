@@ -1,7 +1,7 @@
 /**
  * Pickers
  */
-jQuery(document).ready(function() {
+/* jQuery(document).ready(function() {
 		
 	jQuery('.color-picker').wpColorPicker({
 	    defaultColor: false,
@@ -11,4 +11,4 @@ jQuery(document).ready(function() {
 	    palettes: true
 	});
 	    
-});
+}); */
