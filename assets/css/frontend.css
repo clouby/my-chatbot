@@ -150,10 +150,10 @@
 	overflow: hidden;
 	display: block;
 	box-shadow: 0 0 3px rgba(0,0,0,.3), 0px 12px 47px rgba(0,0,0,.1);
-	z-index: 999;
 	transition: all .2s ease-in-out !important;
 	background-color: #fff;
 	text-align: left;
+	z-index: 9999999;
 }
 
 
@@ -183,6 +183,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	z-index: 999999;
 }
 #circle__chat {
 	width: 60%;
@@ -276,23 +277,23 @@
 	padding: 10px;
 	margin-top: 0px;
 }
- .myc-conversation-response:after {
+.myc-conversation-response:after {
 	z-index: -100;
 	opacity: 0;
 }
 
-input#myc-text{
+.myc-content-overlay input#myc-text{
 	font-size: .7em !important;
 	box-sizing: border-box !important;
-	border-color: rgb(229, 229, 229) !important;
+	border: 1px solid #e5e5e5 !important;
 	transition: all .2s ease;
 }
 
-input#myc-text::placeholder {
+.myc-content-overlay input#myc-text::placeholder {
 	color: rgb(229, 229, 229) !important;
 }
 
-input#myc-text:focus {
+.myc-content-overlay input#myc-text:focus {
 	box-shadow: 0px 0px 8px rgb(229, 229, 229);
 }
 .myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response ,
@@ -308,7 +309,7 @@ input#myc-text:focus {
 	border-radius: 5%;
 }
 
- input[type="button"] {
+.myc-content-overlay input[type="button"] {
 	margin: 0;
 	border: none !important;
 	color: rgb(67,130,248) !important;
@@ -319,15 +320,18 @@ input#myc-text:focus {
 	transition: all .1s linear !important;
 	font-family: 'Roboto', sans-serif !important;
 	font-weight: 400 !important;
+	font-size: 1em;
+	padding: 10px;
 }
 
- input[type="button"]:hover,
- .myc-conversation-bubble.myc-conversation-request.myc-is-active {
+ .myc-content-overlay input[type="button"]:hover,
+ .myc-content-overlay .myc-conversation-bubble.myc-conversation-request.myc-is-active {
 	 color: whitesmoke !important;
 	 border-radius: 2px !important;
 	 background-color: rgb(67,130,248) !important;
 	 font-family: 'Roboto', sans-serif !important;
-	 font-weight: 300;
+	 font-size: 1em;
+	padding: 10px;
  }
 
  .myc-conversation-bubble.myc-conversation-request.myc-is-active {
@@ -368,18 +372,18 @@ input#myc-text:focus {
 .myc-conversation-bubble.myc-conversation-response.myc-quick-replies-response .myc-card-subtitle{
 	text-align: left;
 	font-weight: 600;
-	font-size: .7em;
+	font-size: 1em;
 	padding-top: 5px;
 	padding-left: 8px;
 }
 .myc-card-subtitle {
-	font-weight: 100 !important;
+	font-weight: 300 !important;
 	padding-bottom: 5px;
 }
 
 .myc-conversation-bubble.myc-conversation-response.myc-text-response,
 .myc-conversation-bubble.myc-conversation-response.myc-is-active.myc-text-response {
-	font-size: 12px;
+	font-size: 0.9em;
 	background-color: rgba(241, 240, 240, 1);
 	animation: tra .2s ease;
 	overflow: hidden !important;
