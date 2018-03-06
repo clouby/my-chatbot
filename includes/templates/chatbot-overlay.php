@@ -12,8 +12,12 @@
 	<div class="myc-content-overlay-container"><?php echo do_shortcode( '[my_chatbot]' ); ?></div>
 </div>
 <div class="chat__container">
-<div id="circle__chat" onclick=''>
-	<i class="ion-chatbox-working"></i>
+<div id="pop__up__chat" >
+	<p>Hola, soy <strong>Dibot</strong> ¿Te puedo ayudar?</p>
+	<i class="ion-close-round"></i>
+</div>
+<div id="circle__chat" onclick='' style="cursor:pointer;">
+	<i class="ion-chatbubble-working"></i>
 </div>
 </div>
 

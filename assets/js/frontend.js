@@ -1,31 +1,67 @@
 // Based on blog post: https://www.sitepoint.com/how-to-build-your-own-ai-assistant-using-api-ai/
 // Source code: https://github.com/sitepoint-editors/Api-AI-Personal-Assistant-Demo/blob/master/index.html.
 // Demo: https://devdiner.com/demos/barry/
-
 const error_internal = err => textResponse(myc_script_vars.messages.internal_error) && pos_req();
 const handler_simple_error = prm => prm.catch(error_internal) && prm;
 let auxMove = true;
+let global_counter_cards  = 0;
+let container_move = {};
+
+class Cookie {
+	static foundKeyCookie(name = "key") {
+		const pass = document.cookie;
+		return pass.split(";")
+		 .map(data => {
+			 const aux_obj = {}
+			 const [key, value] = data.split("=");
+			 aux_obj[key.trim()] = value;
+			 return aux_obj;
+		 }).find(data => data[name])
+	};
+
+	 static setPorpertyCookie(value, maxAge = 600, key = "key") {
+		let cookieGenerate = "";
+		if(!key || !value) return console.error("Incomplete values required.");
+		cookieGenerate = `${key}=${value}; max-age=${maxAge}`;
+		document.cookie = cookieGenerate;
+	}
+}
 
 // When ready :)
  jQuery(document).ready(function() {
 
-	var circle_chat = document.getElementById("circle__chat");
-	var arrow_back = document.querySelector(".myc-icon-toggle-up");
+	$("#pop__up__chat").click(function(event){
+		const self = $(this);
+		self.addClass("disable_pop")
+		.one("webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend", ({ originalEvent }) => {
+			if(originalEvent.propertyName == "transform") {
+				self.remove();
+			}
+		});
+	});
 
+
+	const circle_chat = document.getElementById("circle__chat");
+	const arrow_back = document.querySelector(".myc-icon-toggle-up");
 	/*
 	 * Welcome
 	 */
-	if (myc_script_vars.enable_welcome_event) {
-		(function(){
-			main_req({event : 'welcome'}).then(response => pos_req(response).then(hide_load) );
-		})();
+	if (myc_script_vars.enable_welcome_event && !Cookie.foundKeyCookie()) {
+			localStorage.clear();
+			Cookie.setPorpertyCookie("chat_bot");
+			main_req({ event : 'welcome' })
+		    .then(response => pos_req(response)
+		    .then(hide_load) );
+	} else if (Cookie.foundKeyCookie()) {
+		appendConversation();
+	 /* IN PROCESS */
 	}
 
 
 	/*
 	 * When the user enters text in the text input text field and then the presses Enter key
 	 */
-	jQuery("input#myc-text").keypress(function(event) {
+	jQuery("input#myc-text").keypress(event => {
 		if (event.which == 13) {
 			event.preventDefault();
 			jQuery("#myc-conversation-area .myc-conversation-request").removeClass("myc-is-active");
@@ -45,10 +81,8 @@ let auxMove = true;
 	}
 
 	arrow_back.addEventListener("click", handler_click_opt);
-	/* Overlay slide toggle */
+	/* Overlay slide toggleAPRENDIZ -> Dvbe¿w89*UBuc70%RCuc95= */
 	circle_chat.addEventListener("click", handler_click_opt);
-
-
 });
 
 	/* Main Request */
@@ -56,17 +90,12 @@ let auxMove = true;
 		const URL = `${myc_script_vars.base_url}query?v=${myc_script_vars.version_date}`;
 		let key = "";
 		const arr_obj = Object.keys(obj_send);
-
 		const send_data = {
 			lang : "en",
 			sessionId: myc_script_vars.session_id,
 		};
-
-		send_data[arr_obj[0]] = (arr_obj[0] === 'event' && arr_obj.length == 1) ?  
+		send_data[arr_obj[0]] = (arr_obj[0] === 'event' && arr_obj.length == 1) ?
 		{'name' : obj_send[arr_obj[0]].toLocaleUpperCase() } : obj_send[arr_obj[0]];
-
-
-		console.log(send_data);
 
 		const creds = {
 			method: "POST",
@@ -76,10 +105,35 @@ let auxMove = true;
 				'Authorization' : `Bearer ${myc_script_vars.access_token}`
 			})
 		}
-		return  handler_simple_error(fetch(URL, creds)).then(response => response.json())
+		return  handler_simple_error(fetch(URL, creds))
+				.then(response => response.json())
 
 	}
 
+function appendConversation(html = "") {
+	const auxStorage = localStorage.getItem("chat_bot") || "";
+	const area_chat = jQuery("#myc-conversation-area");
+ 	if(auxStorage && !html) {
+		area_chat.append(auxStorage);
+		handler_load_contain(area_chat);
+		return;
+	}
+	area_chat.append(html);
+	localStorage.setItem("chat_bot", auxStorage + html);
+
+}
+
+function handler_load_contain(area) {
+	const [pure_element] = area;
+ 	Array.from(document.querySelectorAll('.container_carrousel[id^=container_]'))
+	.forEach(item => {
+		let {id:idContainer} = item;
+	   	idContainer = parseInt(idContainer.split("_")[1]);
+		global_counter_cards = idContainer + 1;
+		return item;
+	})
+	area.scrollTop(pure_element.lastElementChild.offsetTop);
+}
 
 function card_request(text) {
 	var innerHTML = "<div class=\"myc-conversation-bubble-container myc-conversation-bubble-container-request\"><div class=\"myc-conversation-bubble myc-conversation-request myc-is-active\">" + text + " <div class=\"load__spin\"> </div> </div>";
@@ -90,28 +144,29 @@ function card_request(text) {
 	if (myc_script_vars.show_loading) {
 		innerHTML += "<div class=\"myc-loading\"><i class=\"myc-icon-loading-dot\" /><i class=\"myc-icon-loading-dot\" /><i class=\"myc-icon-loading-dot\" /></div>";
 	}
-	jQuery("#myc-conversation-area").append(innerHTML);
+	appendConversation(innerHTML);
 }
 
 function pos_req(response) {
 	const par = jQuery('.myc-conversation-bubble-container.myc-conversation-bubble-container-request').last()[0];
 	const con = jQuery("#myc-conversation-area");
+	const spin = jQuery('.myc-conversation-bubble.myc-conversation-request.myc-is-active .load__spin')
 	return new Promise(resolve => {
 		if (par) {
 			con.css("padding-bottom", "30vh");
+			spin.css("display", "block");
 			con.scrollTop(par.offsetTop - con.height());
 		}
 		setTimeout(() => {
 			if (response) prepareResponse(response);
-			resolve(con);
+			resolve({con, spin});
 		}, 1000)
 	})
 }
 
-function hide_load(con) {
+function hide_load({con, spin}) {
 	con.css("padding-bottom", "0vh");
-	jQuery('.myc-conversation-bubble.myc-conversation-request.myc-is-active .load__spin')
-	.css("display", "none");
+	spin && spin.css("display", "none");
 }
 /**
  * Send Dialogflow query
@@ -122,7 +177,9 @@ function hide_load(con) {
  function textQuery(text) {
 	if(!text) return;
 	card_request(text.replace(/\_+/g, " "));
-	main_req({query : text}).then(response => pos_req(response).then(hide_load));
+	main_req({query : text}).then(response => {
+		pos_req(response).then(hide_load);
+	});
 }
 
 /**
@@ -215,7 +272,7 @@ function textResponse(text) {
 		innerHTML += "<div class=\"myc-datetime\">" + date.toLocaleTimeString() + "</div>";
 	}
 	innerHTML += "</div>";
-	jQuery("#myc-conversation-area").append(innerHTML);
+	appendConversation(innerHTML);
 }
 
 /**
@@ -235,7 +292,7 @@ function imageResponse(imageUrl) {
 			innerHTML += "<div class=\"myc-datetime\">" + date.toLocaleTimeString() + "</div>";
 		}
 		innerHTML += "</div>";
-		jQuery("#myc-conversation-area").append(innerHTML);
+		appendConversation(innerHTML);
 	}
 }
 
@@ -248,14 +305,14 @@ function imageResponse(imageUrl) {
  * @param text
  * @param postback
  */
-function cardResponse(title, subtitle, buttons, text, postback, imageUrl = null) {
+function cardResponse(title, subtitle, buttons, text, postback, imageUrl = null, redirect_url = null) {
 	var html = "";
 
 	if (imageUrl) {
 		html += "<div class=\"myc-image-response\"><div class=\"wrapper_img\"><img src=\"" + imageUrl + "\"/></div></div>";
 	}
 
-	html += "<div class=\"myc-card-title\">" + title + "</div>";
+	html += `<a href="${ redirect_url || '#'}" class="myc-card-title"> ${title}</a>`;
 
 	html +=  (subtitle) ? "<div class=\"myc-card-subtitle\">" + subtitle + "</div>" : '';
 
@@ -270,7 +327,7 @@ function cardResponse(title, subtitle, buttons, text, postback, imageUrl = null)
 		html += "<input type=\"button\" onclick=\"sendQuery('" + item.postback + "')\" class=\"myc-quick-reply\" value=\"" + item.text + "\" />";
 	});
 
-	jQuery("#myc-conversation-area").append("<div class=\"myc-conversation-bubble-container myc-conversation-bubble-container-response\">" +
+	appendConversation("<div class=\"myc-conversation-bubble-container myc-conversation-bubble-container-response\">" +
 		"<div class=\"myc-conversation-bubble myc-conversation-response myc-is-active myc-quick-replies-response\">" + html + "</div>" +
 		"</div>");
 }
@@ -296,7 +353,7 @@ function quickRepliesResponse(title, replies) {
 		innerHTML += "<div class=\"myc-datetime\">" + date.toLocaleTimeString() + "</div>";
 	}
 	innerHTML += "</div>";
-	jQuery("#myc-conversation-area").append(innerHTML);
+	appendConversation(innerHTML);
 
 	jQuery("#myc-conversation-area .myc-is-active .myc-quick-reply").click(function(event) {
 		event.preventDefault();
@@ -311,7 +368,7 @@ function quickRepliesResponse(title, replies) {
 			innerHTML += "<div class=\"myc-loading\"><i class=\"myc-icon-loading-dot\" /><i class=\"myc-icon-loading-dot\" /><i class=\"myc-icon-loading-dot\" /></div>";
 		}
 		innerHTML += "</div>";
-		jQuery("#myc-conversation-area").append(innerHTML);
+		appendConversation(innerHTML);
 		textQuery(text);
 	});
 
@@ -331,11 +388,83 @@ function customPayload(payload) {
  *
  * @param element
  */
-function customPayloadResponse(element) {
-
-	jQuery.each(element, function (index, item) {
-		cardResponse(item.title, item.subtitle, item.buttons, null, null, item.image_url)
+function customPayloadResponse(elements) {
+	const aux_plans = [];
+	let include  = null;
+	elements.forEach((item, index) => {
+		if(item.title.match(/PLAN/gi)) {
+			if(!include) include = "container_carrousel";
+			aux_plans.push(`
+			<div id="card_${(new Date()).getTime() + index}" class="myc-conversation-bubble myc-conversation-response myc-is-active myc-quick-replies-response">
+			<div class="myc-image-response">
+				<div class="wrapper_img">
+					<img src="${item.image_url}"/>
+				</div>
+			</div>
+			<a href="${item.default_action.url}" class="myc-card-title">
+				${item.title} <i class="ion-forward"></i>
+			</a>
+			<div class="myc-card-subtitle"> ${item.subtitle} </div>
+			${item.buttons.map(btn => {
+				if(btn.title) {
+					btn.text = btn.title;
+					btn.postback = btn.payload;
+				}
+				return `<input type="button" onclick="sendQuery('${btn.postback}')" class="myc-quick-reply" value="${btn.text}"/>`
+			 }).join('')}
+			 </div>
+			 `);
+		} else {
+			cardResponse(item.title
+				, item.subtitle
+				, item.buttons
+				, null
+				, null
+				, item.image_url
+				, item.default_action && item.default_action.url)
+		}
 	});
+	appendConversation(`
+	<div class="myc-conversation-bubble-container myc-conversation-bubble-container-response">
+		<div class="${include || ""}" id="${include ? `container_${global_counter_cards++}` : ""}">
+			${include ? `<div class="arrows_obj">
+			<button onclick="keepMove.apply(this, [event, -1])"><</button>
+			<button onclick="keepMove.apply(this, [event, 1])">></button>
+		</div>` : ""}
+			${aux_plans.join('')}
+		</div>
+	</div>`);
+}
+
+
+
+function keepMove(event, number) {
+
+	const { id:idParent } = this.parentElement.parentElement;
+	const auxContainer = Array.from(document.querySelector(`#${idParent}`).children);
+	const container = auxContainer.slice(1, (auxContainer.length));
+
+ 	container_move[idParent] = (container_move[idParent]||0) + number;
+
+	 if(container_move[idParent] < 0) container_move[idParent] = 0;
+
+	 if(container_move[idParent] > (container.length - 1)) {
+		container_move[idParent] = container.length - 1;
+		}
+
+	container.forEach(card => {
+		card.style.setProperty("display", "none", "important");
+	});
+
+	const [btn_first, btn_last] = document.querySelectorAll(`#${idParent} > .arrows_obj > button`);
+	let toggle_last = (container_move[idParent] === 0) ? "none" : "block";
+	let toggle_first = (container_move[idParent] ===  container.length - 1) ? "none" : "block";
+
+	btn_first.style.setProperty("display", toggle_last, "important");
+
+	btn_last.style.setProperty("display", toggle_first, "important");
+
+	container[container_move[idParent]].style.setProperty("display", "flex", "important");
 }
 
 /**
